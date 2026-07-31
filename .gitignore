@@ -1,1 +1,4 @@
-.DS_store
+node_modules/
+out/
+projects/*/raw/
+.DS_Store

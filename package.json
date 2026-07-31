@@ -1,0 +1,26 @@
+{
+  "name": "mark-builder",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js",
+    "check": "node scripts/check.js",
+    "new": "node scripts/new.js",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@vitejs/plugin-react": "6.0.5",
+    "playwright": "1.62.1",
+    "tailwindcss": "4.3.3",
+    "unplugin-yaml": "4.2.1",
+    "vite": "8.2.0",
+    "vite-plugin-singlefile": "2.3.3"
+  }
+}
