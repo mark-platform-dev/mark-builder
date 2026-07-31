@@ -1,0 +1,10 @@
+modules:
+  - node      # Node.js LTS + npm/pnpm/yarn
+  - docker    # Docker CE
+  - claude    # Claude Code CLI (needs node)
+  - codex     # OpenAI Codex CLI (needs node)
+
+resources:
+  cpus: 4
+  memory: 4GiB
+  disk: 40GiB
