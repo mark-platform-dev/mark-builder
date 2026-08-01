@@ -14,4 +14,12 @@ export default defineConfig({
     // output has zero external references.
     assetsInlineLimit: Infinity,
   },
+  server: {
+    watch: {
+      // virtiofs (Lima/Colima VMs, some Docker volumes) doesn't propagate
+      // host-side writes as inotify events inside the guest, so chokidar's
+      // default event-based watch never fires. Polling works everywhere.
+      usePolling: true,
+    },
+  },
 })
