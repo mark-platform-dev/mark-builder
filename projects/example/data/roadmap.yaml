@@ -1,0 +1,12 @@
+- name: Search rewrite
+  quarter: Q3
+  status: in progress
+  done: 40
+- name: Billing migration
+  quarter: Q3
+  status: done
+  done: 100
+- name: Mobile offline mode
+  quarter: Q4
+  status: planned
+  done: 0
