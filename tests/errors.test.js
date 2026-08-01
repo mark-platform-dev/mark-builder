@@ -53,8 +53,13 @@ test('broken YAML exits 1 naming the file and the line', async () => {
 })
 
 test('a failed build leaves no staging directory behind', async () => {
-  const leftovers = fs
-    .readdirSync(path.join(repoRoot, 'out'), { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name.startsWith('__staging'))
+  const outDir = path.join(repoRoot, 'out')
+  // out/ may not exist at all under a fresh checkout or after `rm -rf out` —
+  // that's vacuously "no leftovers", not a failure, so guard the read.
+  const leftovers = fs.existsSync(outDir)
+    ? fs
+        .readdirSync(outDir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && e.name.startsWith('__staging'))
+    : []
   assert.deepEqual(leftovers, [])
 })
