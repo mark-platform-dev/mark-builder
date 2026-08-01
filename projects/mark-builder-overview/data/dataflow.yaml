@@ -1,0 +1,10 @@
+heading: Data flow
+steps:
+  - label: data/*.yaml, *.json
+    note: your edits
+  - label: main.jsx
+    note: every import, one place
+  - label: components/*.jsx
+    note: renders props only
+  - label: dev server / out/*.html
+    note: browser reload or single file

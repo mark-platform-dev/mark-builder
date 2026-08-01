@@ -1,0 +1,14 @@
+heading: Folder layout
+root: projects/<project>/
+entries:
+  - name: raw/
+    desc: source material (not committed)
+  - name: data/
+    desc: YAML/JSON — yours to edit
+  - name: components/
+    desc: JSX — written once, usually by an agent
+  - name: main.jsx
+    desc: every data import, in one place
+  - name: index.html
+    desc: entry point
+outputNote: 'Build output lands outside projects/, at out/<project>.html'

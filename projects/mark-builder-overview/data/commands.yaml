@@ -1,0 +1,10 @@
+heading: Commands
+items:
+  - cmd: pnpm new <project>
+    desc: Scaffold new project
+  - cmd: pnpm dev <project>
+    desc: Dev server; any edit under the project reloads the page
+  - cmd: pnpm build <project>
+    desc: Write out/<project>.html — one file, no external references
+  - cmd: pnpm check <project>
+    desc: Build, then render the file in a headless browser and verify it works
