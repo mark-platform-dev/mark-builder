@@ -8,6 +8,8 @@ import { projectsDir, repoRoot } from '../scripts/resolve.js'
 
 const run = promisify(execFile)
 
+const BROKEN_YAML_PROJECT = 'tmp-broken'
+
 async function cli(script, args) {
   try {
     const { stdout, stderr } = await run('node', [path.join(repoRoot, 'scripts', script), ...args], {
@@ -28,7 +30,7 @@ test('unknown project exits 1 and lists what is available', async () => {
 })
 
 test('broken YAML exits 1 naming the file and the line', async () => {
-  const name = 'tmp-broken'
+  const name = BROKEN_YAML_PROJECT
   const dir = path.join(projectsDir, name)
   fs.rmSync(dir, { recursive: true, force: true })
   try {
@@ -53,13 +55,9 @@ test('broken YAML exits 1 naming the file and the line', async () => {
 })
 
 test('a failed build leaves no staging directory behind', async () => {
-  const outDir = path.join(repoRoot, 'out')
-  // out/ may not exist at all under a fresh checkout or after `rm -rf out` —
-  // that's vacuously "no leftovers", not a failure, so guard the read.
-  const leftovers = fs.existsSync(outDir)
-    ? fs
-        .readdirSync(outDir, { withFileTypes: true })
-        .filter((e) => e.isDirectory() && e.name.startsWith('__staging'))
-    : []
-  assert.deepEqual(leftovers, [])
+  // Scoped to the one staging dir this file's own failed build (above)
+  // could have left — not a wildcard scan of shared out/, which other
+  // test files build into concurrently and would otherwise false-positive.
+  const ownStagingDir = path.join(repoRoot, 'out', `__staging-${BROKEN_YAML_PROJECT}`)
+  assert.equal(fs.existsSync(ownStagingDir), false)
 })
