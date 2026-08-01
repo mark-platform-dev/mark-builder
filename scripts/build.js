@@ -5,8 +5,13 @@ import { repoRoot, resolveOrExit } from './resolve.js'
 
 export async function buildProject(name) {
   const root = resolveOrExit(name)
+  // basename of the validated, resolved directory — not the raw CLI arg.
+  // A trailing slash or a `../projects/x`-shaped name still resolves to a
+  // real project dir; building output paths from the raw string instead
+  // would let a typo silently write outside out/ while still exiting 0.
+  const slug = path.basename(root)
   const outDir = path.join(repoRoot, 'out')
-  const staging = path.join(outDir, `__staging-${name}`)
+  const staging = path.join(outDir, `__staging-${slug}`)
 
   try {
     await build({
@@ -18,7 +23,7 @@ export async function buildProject(name) {
       base: './',
       build: { outDir: staging, emptyOutDir: true },
     })
-    const target = path.join(outDir, `${name}.html`)
+    const target = path.join(outDir, `${slug}.html`)
     await fs.rm(target, { force: true })
     await fs.rename(path.join(staging, 'index.html'), target)
     return target

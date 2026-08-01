@@ -69,6 +69,12 @@ pnpm test              # the framework's own tests
 empty `#root`, JS errors, failed requests. Run it before saying a project
 works — a build that produces a blank page still exits 0.
 
+Any project can add an `expected.json` (`{ "strings": [...] }`) next to its
+`index.html` — `pnpm check` then also confirms those strings reached the
+rendered DOM. `projects/example/` has one and doubles as `pnpm test`'s smoke
+fixture; if you edit its `data/`, update its `expected.json` to match, or the
+test suite will fail on an edit that's otherwise correct.
+
 Whether the visualisation *looks* right is the user's call, not something to
 assert in a test.
 

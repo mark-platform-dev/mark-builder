@@ -71,11 +71,19 @@ export async function checkProject(name) {
 
 if (import.meta.main) {
   const name = process.argv[2]
-  const { file, failures } = await checkProject(name)
-  if (failures.length) {
-    console.error(`\ncheck FAILED for ${name}:`)
-    for (const f of failures) console.error(`  - ${f}`)
+  try {
+    const { file, failures } = await checkProject(name)
+    if (failures.length) {
+      console.error(`\ncheck FAILED for ${name}:`)
+      for (const f of failures) console.error(`  - ${f}`)
+      process.exit(1)
+    }
+    console.log(`\ncheck OK — ${path.relative(repoRoot, file)}`)
+  } catch (e) {
+    // Matches build.js's CLI entry: a broken YAML file (or any other
+    // buildProject failure) should print one clean line, not an
+    // unhandled-rejection dump with internal vite/rolldown frames.
+    console.error(e.message || e)
     process.exit(1)
   }
-  console.log(`\ncheck OK — ${path.relative(repoRoot, file)}`)
 }
