@@ -10,7 +10,12 @@ import MetricsTable from './components/MetricsTable.jsx'
 createRoot(document.getElementById('root')).render(
   <main className="mx-auto max-w-3xl p-10 font-sans">
     <Intro d={intro} team={team} />
-    <Timeline d={roadmap} />
-    <MetricsTable metrics={metrics} roadmap={roadmap} />
+    <Timeline d={roadmap} heading={intro.timelineHeading} />
+    <MetricsTable
+      metrics={metrics}
+      roadmap={roadmap}
+      summaryPrefix={intro.summaryPrefix}
+      summarySuffix={intro.summarySuffix}
+    />
   </main>
 )

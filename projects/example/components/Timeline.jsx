@@ -1,7 +1,7 @@
-export default function Timeline({ d }) {
+export default function Timeline({ d, heading }) {
   return (
     <section className="mt-8">
-      <h2 className="text-lg font-semibold text-slate-900">Timeline</h2>
+      <h2 className="text-lg font-semibold text-slate-900">{heading}</h2>
       <ul className="mt-4 space-y-3">
         {d.map((item) => (
           <li key={item.name}>

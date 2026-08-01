@@ -1,8 +1,8 @@
-export default function MetricsTable({ metrics, roadmap }) {
+export default function MetricsTable({ metrics, roadmap, summaryPrefix, summarySuffix }) {
   return (
     <section className="mt-10">
       <h2 className="text-lg font-semibold text-slate-900">
-        Summary of {roadmap.length} initiatives
+        {summaryPrefix} {roadmap.length} {summarySuffix}
       </h2>
       <table className="mt-4 w-full text-left text-sm">
         <tbody>
