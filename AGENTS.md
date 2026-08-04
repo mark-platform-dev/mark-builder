@@ -4,9 +4,6 @@ mark-builder turns YAML/JSON into a single self-contained HTML visualisation.
 Each visualisation is a folder under `projects/`. Data shape and layout are
 different every time — do not try to generalise them.
 
-Read `docs/superpowers/specs/2026-08-01-mark-builder-design.md` for the
-reasoning behind the design.
-
 ## Division of labour
 
 **You, once per project:** `data/*` (the first extraction from `raw/`),
@@ -55,7 +52,9 @@ Project-specific color and type tokens go in a `@theme` block in that same
 `<style>` tag — see `docs/visual-design/README.md`.
 
 **5. No `ErrorBoundary`.** A component error should crash the page visibly in
-dev. This is deliberate — see the spec.
+dev. This is deliberate: data edits happen with the dev server running, where
+the error shows up immediately in the overlay, and `pnpm build` runs on data
+that has settled. Isolating sections would add code for no gain.
 
 ## Layout
 
