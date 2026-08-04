@@ -4,7 +4,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>example</title>
-    <style type="text/css">@import "tailwindcss";</style>
+    <style type="text/css">
+      @import "tailwindcss";
+      @import "@fontsource-variable/ibm-plex-sans/wght.css";
+      @import "@fontsource/ibm-plex-mono/latin-400.css";
+      @import "@fontsource/ibm-plex-mono/cyrillic-400.css";
+      @import "@fontsource/ibm-plex-mono/latin-600.css";
+      @import "@fontsource/ibm-plex-mono/cyrillic-600.css";
+
+      /* Tokens from projects/example/design-plan.md */
+      @theme {
+        --font-sans: 'IBM Plex Sans Variable', ui-sans-serif, system-ui, sans-serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+        --color-ink: #262220;
+        --color-paper: #fbf9f6;
+        --color-muted: #8a8178;
+        --color-line: #e7e0d6;
+        --color-accent: #9c7a24;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

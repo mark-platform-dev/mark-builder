@@ -11,7 +11,7 @@ import DataFlow from './components/DataFlow.jsx'
 import Steps from './components/Steps.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <main className="mx-auto max-w-3xl p-10 font-sans">
+  <main className="mx-auto max-w-3xl bg-paper p-10 font-sans text-ink">
     <Hero d={hero} />
     <Commands d={commands} />
     <FolderTree d={layout} />

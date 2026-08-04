@@ -8,7 +8,7 @@ import Timeline from './components/Timeline.jsx'
 import MetricsTable from './components/MetricsTable.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <main className="mx-auto max-w-3xl p-10 font-sans">
+  <main className="mx-auto max-w-2xl bg-paper p-10 font-sans text-ink">
     <Intro d={intro} team={team} />
     <Timeline d={roadmap} heading={intro.timelineHeading} />
     <MetricsTable

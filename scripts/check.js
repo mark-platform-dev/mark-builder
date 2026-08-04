@@ -44,9 +44,17 @@ export async function checkProject(name) {
     const rootLength = await page.evaluate(
       () => document.getElementById('root')?.innerHTML.trim().length ?? -1
     )
+    // Catches an external @font-face url() — invisible to the DOM query above
+    // since it's not an element, and invisible offline since a browser only
+    // requests it once the font is actually used. A text search is safe here
+    // (unlike externalRefs): base64 data URIs can't contain "(", so an
+    // inlined font can never produce a false "url(http" match.
+    const fileText = await fs.promises.readFile(file, 'utf8')
+    const externalCss = [...fileText.matchAll(/@import\s+url\(|url\(\s*['"]?https?:/g)].map((m) => m[0])
 
     const failures = []
     if (externalRefs.length) failures.push(`external refs: ${externalRefs.join(', ')}`)
+    if (externalCss.length) failures.push(`external CSS url(): ${externalCss.join(', ')}`)
     if (rootLength <= 0) failures.push('#root is empty — nothing rendered')
     if (jsErrors.length) failures.push(`JS errors: ${jsErrors.join(' | ')}`)
     if (failedRequests.length) failures.push(`failed requests: ${failedRequests.join(', ')}`)

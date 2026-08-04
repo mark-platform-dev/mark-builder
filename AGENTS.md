@@ -17,6 +17,14 @@ browser refreshes itself, so they should never need you for a data edit.
 
 Everything that follows exists to keep that true.
 
+## Before you write a component
+
+Read `docs/visual-design/README.md`. Do not write a single component until
+you've written `projects/<name>/design-plan.md` as that instruction
+describes — palette, type, layout, signature. Visualisations built without
+that step default to black text on white, which is exactly the problem this
+instruction exists to prevent.
+
 ## Conventions
 
 **1. No data in components.** Every changeable thing — titles, dates, names,
@@ -43,6 +51,8 @@ what is on screen.
 
 **4. Tailwind utility classes in JSX.** No per-project CSS file. Tailwind is
 pulled in by the `<style>@import "tailwindcss";</style>` line in `index.html`.
+Project-specific color and type tokens go in a `@theme` block in that same
+`<style>` tag — see `docs/visual-design/README.md`.
 
 **5. No `ErrorBoundary`.** A component error should crash the page visibly in
 dev. This is deliberate — see the spec.
