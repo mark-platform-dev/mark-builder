@@ -47,11 +47,11 @@ projects/<project>/
 out/<project>.html
 ```
 
-`projects/example/` is a working reference with four data sources. It also
-doubles as the test suite's smoke-test fixture (`pnpm test` builds and
-renders it, checking specific strings via its `expected.json`) — run
-`pnpm new` for your own project rather than editing `example/`'s data. If
-you do change it, update `expected.json` to match.
+`projects/mark-builder-overview/` is a working reference — this tool
+explaining itself, with five data sources. It also doubles as the test
+suite's smoke-test fixture: `pnpm test` builds it, renders it, and checks
+that every value in its `data/` reached the page. Run `pnpm new` for your
+own project rather than editing it.
 
 ## Notes
 

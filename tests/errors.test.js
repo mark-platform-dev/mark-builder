@@ -26,7 +26,7 @@ test('unknown project exits 1 and lists what is available', async () => {
   assert.equal(code, 1)
   assert.match(out, /No project "definitely-not-a-project"/)
   assert.match(out, /Available:/)
-  assert.match(out, /example/)
+  assert.match(out, /mark-builder-overview/)
 })
 
 test('broken YAML exits 1 naming the file and the line', async () => {

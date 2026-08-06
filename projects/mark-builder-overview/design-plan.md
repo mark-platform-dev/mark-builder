@@ -14,23 +14,22 @@ one-pager, not a landing page.
 - `#6b7573` (muted) — secondary text, meta
 - `#dbe0dd` (line) — hairlines, borders
 - `#2f6f5e` (accent) — one deep spruce, used only for the pipeline
-  connectors and command prompts. Cool where `example`'s accent is warm —
-  deliberately a different palette per project, per the project's own
-  convention that visual character isn't shared.
+  connectors and command prompts. A single cool accent, deliberately
+  restricted: everything it touches is a mechanism, so it reads as
+  structural rather than decorative.
 
 ## Type
 
 - IBM Plex Sans Variable — prose: the tagline, descriptions, step text.
 - IBM Plex Mono — everything else: section labels, commands, paths, folder
-  entries, the pipeline itself. Unlike `example` (where mono was a supporting
-  data voice), here it's the dominant register — the subject of this page
-  *is* code, commands, and file paths, so the utility face carries as much
-  weight as the display face.
+  entries, the pipeline itself. Mono is the dominant register here, not a
+  supporting data voice — the subject of this page *is* code, commands, and
+  file paths, so the utility face carries as much weight as the display face.
 
 ## Layout
 
-Single column, `max-w-3xl` (kept wider than `example`'s `max-w-2xl` — command
-lines and paths wrap badly in a narrow column). Every section gets a small
+Single column, `max-w-3xl` (wider than a prose column would be — command
+lines and paths wrap badly in a narrow measure). Every section gets a small
 mono uppercase label acting as a header, in place of a generic `<h2>` —
 reads like a manifest or a source comment, which fits a tool explaining
 itself.
@@ -68,9 +67,11 @@ command prompt.
 
 ## Why this isn't the default
 
-The un-designed version of this page is identical to `example`'s un-designed
-version: `slate-900/600/500`, no color, a system-font heading. Differentiating
-from that is most of the work. Differentiating from `example` itself matters
-too — a cool spruce accent instead of warm ochre, mono-as-primary-voice
-instead of mono-as-data-voice, a wider column — so the two projects don't
-read as one shared template with a swapped color.
+The un-designed version of this page is the generic default every
+visualisation collapses into: `slate-900/600/500`, no color, a system-font
+heading, prose-width column. Differentiating from that is most of the work
+— a deep spruce accent reserved for the mechanism, mono as the primary
+voice rather than a data voice, a column sized for command lines. The next
+project should differentiate from *this* page just as hard: visual
+character is per-project and never shared, so nothing here is a template
+to copy with a swapped color.

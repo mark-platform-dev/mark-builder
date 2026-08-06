@@ -19,7 +19,9 @@ async function launch() {
 }
 
 export async function checkProject(name) {
-  const projectDir = resolveOrExit(name)
+  // Called for the validation, not the path: an unknown name exits with a
+  // clean message here rather than surfacing as a vite error mid-build.
+  resolveOrExit(name)
   const file = await buildProject(name)
 
   const browser = await launch()
@@ -59,19 +61,13 @@ export async function checkProject(name) {
     if (jsErrors.length) failures.push(`JS errors: ${jsErrors.join(' | ')}`)
     if (failedRequests.length) failures.push(`failed requests: ${failedRequests.join(', ')}`)
 
-    // Fourth check, opt-in per project. Only meaningful where the expected
-    // strings are stated explicitly: in an arbitrary project a value may
-    // legitimately not render (a filter option, an internal id, a
-    // click-to-reveal field).
-    const expectedPath = path.join(projectDir, 'expected.json')
-    if (fs.existsSync(expectedPath)) {
-      const expected = JSON.parse(fs.readFileSync(expectedPath, 'utf8'))
-      const text = await page.evaluate(() => document.body.innerText)
-      const missing = (expected.strings ?? []).filter((s) => !text.includes(s))
-      if (missing.length) failures.push(`missing expected strings: ${missing.join(', ')}`)
-    }
+    // Returned so a caller can assert on content without launching a second
+    // browser. Deliberately not checked here: which of a project's values
+    // must appear on screen is a per-project question — a filter option, an
+    // internal id, a click-to-reveal field may all legitimately not render.
+    const text = await page.evaluate(() => document.body.innerText)
 
-    return { file, failures }
+    return { file, failures, text }
   } finally {
     await browser.close()
   }
