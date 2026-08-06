@@ -1,10 +1,29 @@
 heading: Data flow
-steps:
-  - label: data/*.yaml, *.json
-    note: your edits
-  - label: main.jsx
-    note: every import, one place
-  - label: components/*.jsx
-    note: renders props only
-  - label: dev server / out/*.html
-    note: browser reload or single file
+stages:
+  - num: '01'
+    actor: You
+    title: Gather source material
+    desc: >-
+      Jira exports, screenshots, transcripts, a pile of notes — drop anything
+      into raw/. No format required, nothing here gets committed.
+    command: pnpm new q3-roadmap
+    produces: raw/
+  - num: '02'
+    actor: Agent
+    once: true
+    title: Turn it into structured files
+    desc: >-
+      Reads raw/ and writes data/*.yaml alongside the components that render
+      them. Once per project — see AGENTS.md.
+    produces: data/*.yaml + components/*.jsx
+  - num: '03'
+    actor: You
+    title: Edit the data, watch it update
+    desc: >-
+      Change a value and the page in your browser reloads itself. From here on
+      the data is yours and you never need the agent again.
+    command: pnpm dev q3-roadmap
+result:
+  command: pnpm build q3-roadmap
+  file: out/q3-roadmap.html
+  note: One file, no external references — send it to anyone.

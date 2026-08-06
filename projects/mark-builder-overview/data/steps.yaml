@@ -1,7 +1,0 @@
-heading: Getting started
-items:
-  - pnpm new q3-roadmap
-  - Drop source material — Jira exports, screenshots, transcripts — into projects/q3-roadmap/raw/
-  - Ask an agent to turn it into data/ and components/ (see AGENTS.md)
-  - pnpm dev q3-roadmap, then edit data/*.yaml yourself and watch it update
-  - pnpm build q3-roadmap and send out/q3-roadmap.html

@@ -2,8 +2,9 @@
 
 ## Subject
 
-The tool explaining its own mechanism: commands, folder layout, the actual
-data → component → output pipeline, getting-started steps. Read by a
+The tool explaining its own mechanism, led by the path a person actually
+walks: raw material in, an agent once in the middle, then their own data
+edits out. Commands and folder layout follow as reference. Read by a
 developer or an agent sizing up the tool for the first time — a technical
 one-pager, not a landing page.
 
@@ -13,10 +14,11 @@ one-pager, not a landing page.
 - `#f7f8f6` (paper) — background, cool and quiet rather than warm
 - `#6b7573` (muted) — secondary text, meta
 - `#dbe0dd` (line) — hairlines, borders
-- `#2f6f5e` (accent) — one deep spruce, used only for the pipeline
-  connectors and command prompts. A single cool accent, deliberately
-  restricted: everything it touches is a mechanism, so it reads as
-  structural rather than decorative.
+- `#2f6f5e` (accent) — one deep spruce, used only for stage numbers, the
+  handoff rules between stages, command prompts, and the single card that
+  belongs to the agent. A single cool accent, deliberately restricted:
+  everything it touches is a mechanism, so it reads as structural rather
+  than decorative.
 
 ## Type
 
@@ -39,6 +41,28 @@ mark-builder                          <- large sans title
 Turn structured YAML/JSON into...     <- sans tagline
 Each visualisation is a folder...     <- mono note
 
+DATA FLOW
+┌─────────────────────────────────┐
+│ 01                        YOU   │
+│ Gather source material          │
+│ Jira exports, screenshots, ...  │
+│ $ pnpm new q3-roadmap           │
+└─────────────────────────────────┘
+   │ raw/
+╔═════════════════════════════════╗   <- accent border: the one agent step
+║ 02                      AGENT   ║
+║ Turn it into structured files   ║
+╚═════════════════════════════════╝
+   │ data/*.yaml + components/*.jsx
+┌─────────────────────────────────┐
+│ 03                        YOU   │
+│ Edit the data, watch it update  │
+│ $ pnpm dev q3-roadmap           │
+└─────────────────────────────────┘
+   │ $ pnpm build q3-roadmap
+out/q3-roadmap.html                   <- bare, no card
+One file, no external references...
+
 COMMANDS
 pnpm new <project>        Scaffold new project
 pnpm dev <project>        Dev server; ...
@@ -48,22 +72,25 @@ FOLDER LAYOUT
 projects/<project>/
 ├─ raw/          source material (not committed)
 ...
-
-DATA FLOW
-[data/*.yaml] → [main.jsx] → [components/*.jsx] → [dev server / out/*.html]
-
-GETTING STARTED
-1. pnpm new q3-roadmap
-2. ...
 ```
 
 ## Signature
 
-The data-flow pipeline. Four nodes, connected by accent-colored arrows,
-each a bordered mono chip with its note beneath — a literal diagram of
-the mechanism described in the surrounding prose, not a generic "process
-steps" graphic. It's the one place accent color does more than mark a
-command prompt.
+The data-flow cards, and specifically the actor column running down them:
+YOU → AGENT → YOU. Three stage cards, each carrying a number, who does the
+work, and the command that starts it; between them an accent rule labelled
+with the artefact being handed on (`raw/`, then `data/*.yaml +
+components/*.jsx`). Only the agent's card gets an accent border and tint —
+the emphasis is load-bearing, not decorative: it shows the agent is needed
+exactly once, in the middle, and the reader owns both ends. The flow ends
+on a bare mono filename rather than a fourth card, so the path visibly
+terminates in an artefact instead of another box.
+
+This replaces the earlier file-level pipeline (`data/` → `main.jsx` →
+`components/` → output), which described the repo's internals rather than
+anything the reader does, and it absorbs the separate "Getting started"
+list — the steps now live on the cards they belong to instead of being
+restated underneath.
 
 ## Why this isn't the default
 
