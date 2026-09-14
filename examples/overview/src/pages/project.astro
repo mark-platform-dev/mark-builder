@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import FolderTree from "../components/FolderTree.jsx"
+import Checklist from "../components/Checklist.jsx"
+
+import project from "../../data/project.yaml"
+---
+
+<BaseLayout meta={project.meta}>
+  <FolderTree d={project.layout} />
+  <Checklist d={project.checklist} client:only="react" />
+</BaseLayout>

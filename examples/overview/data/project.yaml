@@ -1,0 +1,39 @@
+meta:
+  title: Project layout
+  description: What a project created from the template contains and what to do first.
+
+layout:
+  heading: Folder layout
+  root: my-product/
+  entries:
+    - name: raw/
+      desc: source material — read, never rewritten, never committed
+    - name: data/
+      desc: YAML/JSON — yours to edit
+    - name: design/
+      desc: one design plan per route
+    - name: theme/
+      desc: theme.css (required), assets/, source.md
+    - name: src/pages/
+      desc: routes — .astro and .mdx, each importing its own data
+    - name: src/layouts/
+      desc: BaseLayout.astro
+    - name: src/components/
+      desc: React components — static by default, islands on request
+    - name: scripts/
+      desc: verify.js
+  note: >-
+    An ordinary Astro repository. Change any part of it; the conventions are
+    a starting point, not a dependency.
+
+checklist:
+  title: First session in a new project
+  items:
+    - id: raw
+      text: Put the source material into raw/
+    - id: theme
+      text: Replace theme/ with the product's theme, or keep the default
+    - id: plan
+      text: Ask an agent for data/ and the first page — it writes design/index.md first
+    - id: verify
+      text: Run pnpm verify before sharing the result

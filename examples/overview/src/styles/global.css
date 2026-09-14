@@ -1,0 +1,6 @@
+/* The one stylesheet BaseLayout imports. Layer order is fixed here so it
+   cannot depend on how the bundler splits CSS between pages. Component and
+   page styles are unlayered and beat both layers by cascade rules. */
+@layer base, theme;
+@import "./base.css" layer(base);
+@import "../../theme/theme.css" layer(theme);

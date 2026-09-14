@@ -1,0 +1,97 @@
+.section {
+  margin-top: 3rem;
+}
+.stages {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.card {
+  padding: 1.25rem;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+.agent {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-background));
+}
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.num {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+.actor {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.actorAgent {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+.title {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.desc {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+.command {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.prompt {
+  color: var(--color-primary);
+}
+.handoff,
+.end {
+  margin-left: 1.25rem;
+  padding-left: 1.25rem;
+}
+.handoff {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-left: 2px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  overflow-wrap: anywhere;
+}
+.end {
+  border-left: 2px solid transparent;
+}
+.file {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+@media (min-width: 640px) {
+  .card {
+    padding: 1.5rem;
+  }
+  .handoff,
+  .end {
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+  }
+}

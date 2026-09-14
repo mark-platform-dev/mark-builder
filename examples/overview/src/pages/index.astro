@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import Hero from "../components/Hero.jsx"
+import DataFlow from "../components/DataFlow.jsx"
+import Commands from "../components/Commands.jsx"
+
+import home from "../../data/home.yaml"
+---
+
+<BaseLayout meta={home.meta}>
+  <Hero d={home.hero} />
+  <DataFlow d={home.dataflow} />
+  <Commands d={home.commands} />
+</BaseLayout>

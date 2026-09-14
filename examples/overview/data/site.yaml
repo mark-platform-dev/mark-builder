@@ -1,0 +1,8 @@
+name: mark-builder
+description: A template for sites built from data — raw material in, an agent once, then your own edits.
+lang: en
+nav:
+  - label: Overview
+    href: /
+  - label: Project
+    href: /project/

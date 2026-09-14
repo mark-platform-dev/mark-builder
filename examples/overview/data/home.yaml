@@ -1,0 +1,60 @@
+meta:
+  title: Overview
+  description: What mark-builder is and how the raw → data → site pipeline works.
+
+hero:
+  title: mark-builder
+  tagline: >-
+    Turn source material into a site that stays editable. An agent extracts
+    raw exports into YAML once, you edit the YAML from then on, and Astro
+    renders it — a single visualisation, a dashboard, a landing page, a docs
+    site.
+  note: >-
+    A project is an ordinary Astro repository created from a template. It
+    depends on Astro and React, not on mark-builder.
+
+dataflow:
+  heading: Data flow
+  stages:
+    - num: '01'
+      actor: You
+      title: Create the project and gather material
+      desc: >-
+        Jira exports, screenshots, transcripts, a pile of notes — drop
+        anything into raw/. No format required, nothing there gets
+        committed.
+      command: pnpm create astro@latest my-product --template mark-platform-dev/mark-builder/template
+      produces: raw/
+    - num: '02'
+      actor: Agent
+      once: true
+      title: Turn it into data and pages
+      desc: >-
+        Reads raw/, writes data/*.yaml, then the components and pages that
+        render them — after a design plan per page. See AGENTS.md.
+      produces: data/*.yaml + src/pages + src/components
+    - num: '03'
+      actor: You
+      title: Edit the data, watch it update
+      desc: >-
+        Change a value and the page in your browser reloads itself. From
+        here on the data is yours; the agent comes back only for new pages.
+      command: pnpm dev
+  result:
+    command: pnpm verify
+    file: dist/
+    note: >-
+      A static multi-page site, checked page by page in a headless browser.
+      Publish the folder anywhere.
+
+commands:
+  heading: Commands
+  items:
+    - cmd: pnpm dev
+      desc: Dev server; any edit under data/ or src/ reloads the page
+    - cmd: pnpm build
+      desc: Static multi-page site in dist/
+    - cmd: pnpm preview
+      desc: Serve dist/ locally
+    - cmd: pnpm verify
+      desc: Build, then open every page in a headless browser and check it
