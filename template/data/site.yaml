@@ -1,0 +1,8 @@
+# Site-wide values. BaseLayout.astro is the only layout/component that
+# imports this file; everything else gets data through page props.
+name: My product
+description: A site built from data with mark-builder
+lang: en
+nav:
+  - label: Start
+    href: /

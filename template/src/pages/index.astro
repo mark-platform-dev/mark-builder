@@ -1,13 +1,16 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import Hero from "../components/Hero.jsx"
+import Steps from "../components/Steps.jsx"
+import Checklist from "../components/Checklist.jsx"
+
+// A page is the composition root: it imports every data file the route
+// needs and hands the pieces to components as props.
+import home from "../../data/home.yaml"
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>mark-builder template</title>
-  </head>
-  <body>
-    <h1>mark-builder template</h1>
-  </body>
-</html>
+<BaseLayout meta={home.meta}>
+  <Hero d={home.hero} />
+  <Steps d={home.steps} />
+  <Checklist d={home.checklist} client:only="react" />
+</BaseLayout>

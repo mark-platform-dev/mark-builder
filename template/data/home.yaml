@@ -1,0 +1,37 @@
+meta:
+  title: Start here
+  description: A new mark-builder project. Replace this page with your own.
+
+hero:
+  eyebrow: New project
+  title: Raw material in, a site out
+  subtitle: >-
+    Everything on this page comes from data/home.yaml. Edit it and the page
+    reloads itself; ask an agent for the parts that need code.
+
+steps:
+  - id: raw
+    title: Drop source material into raw/
+    text: >-
+      Exports, screenshots, transcripts, notes. Nothing in raw/ is committed
+      or built.
+  - id: data
+    title: Let an agent turn it into data/
+    text: >-
+      YAML and JSON in whatever shape the material has. This is the layer
+      you edit from now on.
+  - id: pages
+    title: Build pages from the data
+    text: >-
+      Pages pick data and components; components render it. Interactive
+      parts become React islands.
+
+checklist:
+  title: First session
+  items:
+    - id: theme
+      text: Replace theme/ with the product's theme, or keep the default
+    - id: plan
+      text: Write design/index.md before the first real page
+    - id: verify
+      text: Run pnpm verify before handing the project over
