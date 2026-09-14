@@ -6,6 +6,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Serialise deploys: two pushes in quick succession would otherwise race and
+# the older build could land last. Not cancel-in-progress — a half-finished
+# deploy is worse than a redundant one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 env:
   ASTRO_TELEMETRY_DISABLED: 1
 
@@ -37,7 +44,63 @@ jobs:
           key: chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
       # --with-deps pulls the system libraries Chromium needs on a bare runner.
+      # Still run on a cache hit, minus the browser download, because those
+      # libraries live outside the cached path.
       - name: Install Chromium
         run: pnpm --filter mark-builder-template exec playwright install --with-deps chromium
 
+      # Includes the end-to-end project and the overview's data-to-DOM check.
+      # `astro build` alone exits 0 on a blank page; this is the gate that
+      # stops a broken site reaching Pages.
       - run: pnpm test
+
+      - run: pnpm --filter overview build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: examples/overview/dist
+
+  deploy:
+    needs: test
+    # Pull requests get the tests and the build, but no deploy: only main
+    # should change what's published, and a fork PR has no access to the
+    # pages credentials anyway.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # The path users type. The local end-to-end test copies template/ from the
+  # working tree; only a real `create astro` from GitHub proves the published
+  # subdirectory template resolves and installs. Runs after merge, so it
+  # reports a broken template rather than preventing it — good enough for a
+  # repository this size.
+  smoke:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Create a project from the published template
+        run: pnpm create astro@latest smoke-product --template mark-platform-dev/mark-builder/template --no-install --no-git --yes
+
+      - name: Install and verify it
+        working-directory: smoke-product
+        run: |
+          pnpm install
+          pnpm exec playwright install --with-deps chromium
+          pnpm verify
