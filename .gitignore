@@ -1,5 +1,12 @@
 node_modules/
 .pnpm-store/
-out/
-projects/*/raw/
+dist/
+.astro/
+**/raw/*
+!**/raw/.gitkeep
 .DS_Store
+
+# Left behind by `pnpm --dir <pkg>` / `pnpm -C <pkg>`, which treat the package
+# as its own workspace. Use `pnpm --filter <pkg>` instead.
+template/pnpm-lock.yaml
+examples/*/pnpm-lock.yaml

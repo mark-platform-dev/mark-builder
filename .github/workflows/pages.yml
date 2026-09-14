@@ -1,4 +1,4 @@
-name: Build and publish overview
+name: Test, build and publish overview
 
 on:
   push:
@@ -6,15 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Serialise deploys: two pushes in quick succession would otherwise race and
-# the older build could land last. Not cancel-in-progress — a half-finished
-# deploy is worse than a redundant one.
-concurrency:
-  group: pages
-  cancel-in-progress: false
+env:
+  ASTRO_TELEMETRY_DISABLED: 1
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,59 +20,24 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
       # Keyed on the pinned playwright version rather than the lockfile hash:
-      # the browser only changes when playwright does, so an unrelated
-      # dependency bump shouldn't cost a fresh ~150MB download.
+      # the browser only changes when playwright does.
       - name: Resolve playwright version
         id: pw
-        run: echo "version=$(node -p "require('./package.json').devDependencies.playwright")" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(node -p "require('./template/package.json').devDependencies.playwright")" >> "$GITHUB_OUTPUT"
 
       - uses: actions/cache@v4
-        id: chromium-cache
         with:
           path: ~/.cache/ms-playwright
           key: chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
       # --with-deps pulls the system libraries Chromium needs on a bare runner.
-      # Still run on a cache hit, minus the browser download, because those
-      # libraries live outside the cached path.
       - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm --filter mark-builder-template exec playwright install --with-deps chromium
 
-      # Renders the built file in a headless browser and asserts every value in
-      # the project's data/ reached the page. `pnpm build` alone exits 0 on a
-      # blank page, so this is the gate that stops a broken site reaching Pages.
       - run: pnpm test
-
-      - run: pnpm build mark-builder-overview
-
-      - name: Assemble site
-        run: |
-          mkdir -p site
-          cp out/mark-builder-overview.html site/index.html
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    needs: build
-    # Pull requests get the build and the tests, but no deploy: only main
-    # should change what's published, and a fork PR has no access to the
-    # pages credentials anyway.
-    if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4

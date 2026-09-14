@@ -1,9 +1,0 @@
-title: mark-builder
-tagline: >-
-  Turn structured YAML/JSON into a self-contained HTML visualisation — a
-  roadmap, a concept page, a deck. Edit a data file and the page in your
-  browser updates itself. When it looks right, build it into a single
-  .html file you can send to anyone.
-note: >-
-  Each visualisation is a folder in projects/. Its shape is up to you: the
-  system does not impose a data schema or a layout.

@@ -1,0 +1,8 @@
+packages:
+  - template
+  - examples/*
+
+# pnpm 11 blocks dependency build scripts unless listed here; esbuild is
+# pulled in by Astro and its Vite plugins and fails `pnpm install` otherwise.
+allowBuilds:
+  esbuild: true
