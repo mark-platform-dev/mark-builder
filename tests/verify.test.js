@@ -9,6 +9,7 @@ import {
   normalizeBase,
   resolveFile,
   serveDist,
+  verifyDist,
 } from '../template/scripts/verify.js'
 import { tmpDir } from './helpers.js'
 
@@ -129,4 +130,58 @@ test('serveDist serves dist/ under the base with content types and 404s elsewher
   } finally {
     await server.close()
   }
+})
+
+test('verifyDist reports each broken page; external requests are warnings only', async () => {
+  const dist = tmpDir('neg')
+  write(dist, {
+    'index.html': '<!doctype html><body><p>root</p></body>',
+    'dead-link/index.html':
+      '<!doctype html><body><p>hello</p><a href="/nowhere/">x</a><a href="#top">a</a>' +
+      '<a href="mailto:a@b.c">m</a><a href="/">home</a><a href="https://example.com/">ext</a></body>',
+    'island/index.html':
+      '<!doctype html><body><p>text</p><astro-island ssr client="load" component-url="/_astro/X.js"></astro-island></body>',
+    'visible/index.html':
+      '<!doctype html><body><p>text</p><astro-island ssr client="visible" component-url="/_astro/V.js"></astro-island></body>',
+    'throws/index.html': '<!doctype html><body><p>text</p><script>throw new Error("boom")</script></body>',
+    'empty/index.html': '<!doctype html><body></body>',
+    'graphic/index.html': '<!doctype html><body><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"></svg></body>',
+    'external/index.html':
+      '<!doctype html><head><link rel="stylesheet" href="https://example.com/x.css"></head>' +
+      '<body><p>text</p><img src="https://example.com/i.png" alt=""></body>',
+    'missing-asset/index.html': '<!doctype html><body><p>text</p><img src="/_astro/nope.png" alt=""></body>',
+  })
+  const result = await verifyDist({ dist, base: '/' })
+  const byUrl = Object.fromEntries(result.pages.map((p) => [p.url, p]))
+  assert.equal(result.ok, false)
+  assert.deepEqual(byUrl['/'].failures, [])
+  assert.deepEqual(byUrl['/dead-link/'].failures, ['dead link: /nowhere/'])
+  assert.deepEqual(byUrl['/island/'].failures, ['island not hydrated: /_astro/X.js (client:load)'])
+  assert.deepEqual(byUrl['/visible/'].failures, [])
+  assert.match(byUrl['/throws/'].failures.join(' | '), /JS errors: boom/)
+  assert.deepEqual(byUrl['/empty/'].failures, ['body has no rendered content'])
+  assert.deepEqual(byUrl['/graphic/'].failures, [])
+  assert.deepEqual(byUrl['/external/'].failures, [])
+  assert.equal(byUrl['/external/'].warnings.length, 2, byUrl['/external/'].warnings.join('\n'))
+  assert.match(byUrl['/external/'].warnings[0], /external request blocked: https:\/\/example\.com\//)
+  assert.match(byUrl['/missing-asset/'].failures.join(' | '), /failed requests: .*\/_astro\/nope\.png \(404\)/)
+  assert.equal(byUrl['/'].text.trim(), 'root')
+})
+
+test('verifyDist under a sub-path base resolves links against that base', async () => {
+  const dist = tmpDir('base')
+  write(dist, {
+    'index.html': '<!doctype html><body><p>root</p><a href="/mark-builder/about/">ok</a><a href="/about/">bad</a></body>',
+    'about/index.html': '<!doctype html><body><p>about</p></body>',
+  })
+  const result = await verifyDist({ dist, base: '/mark-builder' })
+  const byUrl = Object.fromEntries(result.pages.map((p) => [p.url, p]))
+  assert.deepEqual(byUrl['/mark-builder/'].failures, ['dead link: /about/'])
+  assert.deepEqual(byUrl['/mark-builder/about/'].failures, [])
+})
+
+test('verifyDist on an empty folder is a failure, not a pass', async () => {
+  const result = await verifyDist({ dist: tmpDir('none'), base: '/' })
+  assert.equal(result.ok, false)
+  assert.match(result.error, /no HTML pages/)
 })
