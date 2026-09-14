@@ -248,13 +248,16 @@ export async function verifyDist({ dist, base = '/' }) {
   const pages = await listPages(dist, base).catch(() => [])
   if (pages.length === 0) return { ok: false, pages: [], error: `no HTML pages in ${dist}` }
   const server = await serveDist(dist, base)
-  const browser = await launchBrowser()
   try {
-    const results = []
-    for (const pageInfo of pages) results.push(await checkPage(browser, { origin: server.origin, base, dist }, pageInfo))
-    return { ok: results.every((r) => r.failures.length === 0), pages: results }
+    const browser = await launchBrowser()
+    try {
+      const results = []
+      for (const pageInfo of pages) results.push(await checkPage(browser, { origin: server.origin, base, dist }, pageInfo))
+      return { ok: results.every((r) => r.failures.length === 0), pages: results }
+    } finally {
+      await browser.close()
+    }
   } finally {
-    await browser.close()
     await server.close()
   }
 }
