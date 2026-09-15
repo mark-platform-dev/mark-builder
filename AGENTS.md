@@ -76,7 +76,6 @@ ignored and runs the whole suite.
 template/          the template (see its own AGENTS.md for project rules)
 examples/overview/ demo site, published to GitHub Pages under /mark-builder/
 tests/             node:test suites
-docs/superpowers/  specs and plans
 .github/workflows/ tests on PRs; deploy and create-astro smoke on main
 ```
 
