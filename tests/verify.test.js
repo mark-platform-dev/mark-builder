@@ -127,6 +127,12 @@ test('serveDist serves dist/ under the base with content types and 404s elsewher
     assert.equal((await fetch(`${server.origin}/docs/about/`)).status, 200)
     assert.equal((await fetch(`${server.origin}/about/`)).status, 404)
     assert.equal((await fetch(`${server.origin}/docs/missing/`)).status, 404)
+    // Malformed percent-encoding must not crash the request handler (an
+    // unhandled rejection there would kill the whole verify process).
+    const malformed = await fetch(`${server.origin}/docs/100%.png`)
+    assert.ok(malformed.status >= 400 && malformed.status < 500, malformed.status)
+    // The server must still be serving afterwards.
+    assert.equal((await fetch(`${server.origin}/docs/`)).status, 200)
   } finally {
     await server.close()
   }
@@ -150,6 +156,10 @@ test('verifyDist reports each broken page; external requests are warnings only',
       '<!doctype html><head><link rel="stylesheet" href="https://example.com/x.css"></head>' +
       '<body><p>text</p><img src="https://example.com/i.png" alt=""></body>',
     'missing-asset/index.html': '<!doctype html><body><p>text</p><img src="/_astro/nope.png" alt=""></body>',
+    'отчёт/index.html': '<!doctype html><body><p>отчёт</p></body>',
+    'unicode-link/index.html':
+      '<!doctype html><body><p>text</p><a href="/отчёт/">plain</a>' +
+      '<a href="/%D0%BE%D1%82%D1%87%D1%91%D1%82/">encoded</a></body>',
   })
   const result = await verifyDist({ dist, base: '/' })
   const byUrl = Object.fromEntries(result.pages.map((p) => [p.url, p]))
@@ -165,6 +175,7 @@ test('verifyDist reports each broken page; external requests are warnings only',
   assert.equal(byUrl['/external/'].warnings.length, 2, byUrl['/external/'].warnings.join('\n'))
   assert.match(byUrl['/external/'].warnings[0], /external request blocked: https:\/\/example\.com\//)
   assert.match(byUrl['/missing-asset/'].failures.join(' | '), /failed requests: .*\/_astro\/nope\.png \(404\)/)
+  assert.deepEqual(byUrl['/unicode-link/'].failures, [])
   assert.equal(byUrl['/'].text.trim(), 'root')
 })
 

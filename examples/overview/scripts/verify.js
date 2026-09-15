@@ -125,7 +125,14 @@ export async function listPages(dist, base) {
 // without an Astro project around them.
 export async function serveDist(dist, base) {
   const server = http.createServer(async (req, res) => {
-    const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
+    let pathname
+    try {
+      pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
+    } catch {
+      res.writeHead(400, { 'content-type': 'text/plain' })
+      res.end('bad request')
+      return
+    }
     const file = pathname.startsWith(base) ? await resolveFile(dist, pathname.slice(base.length)) : null
     if (!file) {
       res.writeHead(404, { 'content-type': 'text/plain' })
@@ -229,8 +236,15 @@ export async function checkPage(browser, { origin, base, dist }, pageInfo) {
       if (SKIP_LINK.test(href)) continue
       const target = new URL(href, origin + pageInfo.url)
       if (target.origin !== origin) continue
-      const inside = target.pathname.startsWith(base)
-      if (!inside || !(await resolveFile(dist, target.pathname.slice(base.length)))) {
+      let pathname
+      try {
+        pathname = decodeURIComponent(target.pathname)
+      } catch {
+        failures.push(`dead link: ${href}`)
+        continue
+      }
+      const inside = pathname.startsWith(base)
+      if (!inside || !(await resolveFile(dist, pathname.slice(base.length)))) {
         failures.push(`dead link: ${href}`)
       }
     }
