@@ -95,7 +95,11 @@ jobs:
           node-version: '22'
 
       - name: Create a project from the published template
-        run: pnpm create astro@latest smoke-product --template mark-platform-dev/mark-builder/template --no-install --no-git --yes
+        run: pnpm create astro@latest smoke-product --template mark-platform-dev/mark-builder/template --no-install --no-git --yes --no-ai
+
+      - name: The template's AGENTS.md reached the project
+        # Without --no-ai, create-astro overwrites it with a generic file.
+        run: grep -q '^# Working in this project' smoke-product/AGENTS.md
 
       - name: Install and verify it
         working-directory: smoke-product

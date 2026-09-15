@@ -11,15 +11,17 @@ Astro project that depends on Astro and React, not on mark-builder.
 Requires Node 22.12+ and pnpm 11.
 
 ```bash
-pnpm create astro@latest my-product --template mark-platform-dev/mark-builder/template
+pnpm create astro@latest my-product --template mark-platform-dev/mark-builder/template --no-ai
 cd my-product
 pnpm install
 pnpm exec playwright install chromium   # once; only `pnpm verify` needs it
 pnpm dev
 ```
 
-The generated project's `README.md` describes daily work and `AGENTS.md`
-tells an agent how to work in it. The overview site,
+`--no-ai` matters: without it `create astro` replaces the template's
+`AGENTS.md` with a generic one of its own. The generated project's
+`README.md` describes daily work and `AGENTS.md` tells an agent how to work
+in it. The overview site,
 <https://mark-platform-dev.github.io/mark-builder/>, is such a project
 describing the system.
 

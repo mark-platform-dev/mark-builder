@@ -14,12 +14,73 @@ material into a site in three layers:
 **The owner, repeatedly:** `data/*.yaml` and Markdown/MDX prose. The dev
 server reloads the page; no agent is needed for a data or copy edit.
 
-**You, per page or feature:** the first extraction from `raw/` into `data/`,
-components in `src/components/`, pages in `src/pages/`, the plan in
-`design/`.
+**You, per page or feature:** the extraction from `raw/` into `data/` (the
+first one, and again when a new export arrives), components in
+`src/components/`, pages in `src/pages/`, the plan in `design/`.
 
 **Anyone:** everything else. This is an ordinary Astro project; nothing in it
 is off limits.
+
+## From raw/ to data/
+
+Nothing happens on its own when files land in `raw/`. The owner asks — "make
+a page from the export in `raw/`", "add the Q3 numbers" — and you run this
+sequence.
+
+1. **Look before you extract.** List `raw/`, open every file the request
+   touches, and say what you found: which files, what they contain, what
+   the request needs that is not there. Ask for missing material rather
+   than inventing it. `raw/` is read-only: no renaming, no converting in
+   place, no notes written next to the source.
+2. **One data file per route.** `/` → `data/home.yaml`, `/roadmap` →
+   `data/roadmap.yaml`, `/reports/q3` → `data/reports/q3.yaml`, matching
+   `design/<route>.md` and `src/pages/<route>.astro`. Site-wide things
+   (name, nav, footer) live in `data/site.yaml`. A dataset several pages
+   share gets its own file named after the data, not after a page.
+3. **Shape follows the material, not the component.** Keys are the words
+   the owner uses for the thing (`quarters`, `releases`, `customers`);
+   values are what the source says, in the source's order unless the page
+   needs another. Keep the shape flat enough that the owner can add a row
+   without reading the component. Add the `meta:` block (`title`,
+   `description`) the page needs.
+4. **YAML for hands, JSON for volume.** Everything the owner will edit is
+   YAML. A table of hundreds of rows, or an export nobody edits by hand,
+   becomes `data/<name>.json`, imported by the island that renders it
+   (convention 1). Drop columns no page uses. Do not pre-compute sums,
+   percentages or sort orders the component can compute: the owner's next
+   edit would silently invalidate them.
+5. **Record the source.** `raw/` is not committed, so after a clone `data/`
+   is the only trace left. Every extracted file starts with a `source:`
+   block: the files in `raw/`, the extraction date, what was transformed
+   or approximated.
+
+   ```yaml
+   source:
+     files: [raw/metrics-2026-q3.xlsx]
+     extracted: 2026-09-15
+     notes: >-
+       Sheet "Summary", rows 4–19. July churn read from the chart
+       screenshot, ±0.1 pp.
+   ```
+
+   Components ignore `source:`; it is for people.
+6. **Non-text sources.** Screenshots, PDFs and recordings are transcribed
+   into data by hand, and the `source:` block says which values were read
+   rather than copied. If the request needs a precision the material
+   cannot give, say so instead of guessing.
+7. **A new export does not overwrite the owner's edits.** `data/` belongs
+   to the owner from the first commit on. When `raw/` receives a newer
+   export, extract again into the same file, then compare with the
+   committed version: `git log -p data/<file>` shows what the owner changed
+   by hand. Owner edits win over the source unless the owner says
+   otherwise. Show the diff and list the conflicts before committing.
+   Never regenerate a data file from scratch and replace it silently.
+8. **Then the page.** Write `design/<route>.md`, then the components and
+   the page (next section). Each visualisation is built for its data: a
+   chart of quarterly numbers is a component that takes those numbers, not
+   a generic chart with a config object. Data that does not change in the
+   browser renders at build time as HTML or SVG; anything with state, a
+   browser API or a charting library is an island (convention 4).
 
 ## Before you write a page
 
@@ -88,6 +149,37 @@ from, keep the default and say so in the design plans.
 A theme is site-wide. A page may override a token locally in its own scoped
 style when its content calls for it; it never edits `theme/`. The theme
 carries the identity, the design plans describe the composition.
+
+## Working with Astro
+
+This is an ordinary Astro project with React and MDX; versions are pinned in
+`package.json`. The Astro docs are the reference for anything this file does
+not cover:
+
+- [Routing: pages, dynamic routes, middleware](https://docs.astro.build/en/guides/routing/)
+- [Framework components and islands](https://docs.astro.build/en/guides/framework-components/)
+- [Content collections](https://docs.astro.build/en/guides/content-collections/)
+- [Importing YAML, JSON and other files](https://docs.astro.build/en/guides/imports/)
+- [Styling](https://docs.astro.build/en/guides/styling/)
+- [MDX](https://docs.astro.build/en/guides/integrations-guide/mdx/)
+
+Where the docs and this file disagree — `.astro` components in
+`src/components/`, Tailwind, a data schema — this file wins.
+
+**Dev server.** `pnpm dev` serves the site on `http://localhost:4321` and
+reloads on changes to `data/`, `src/` and `theme/`; a YAML error shows the
+file, line and column in the overlay. Astro detects an agent environment and
+puts the server in the background by itself; elsewhere use
+`pnpm dev --background`. Manage it with `pnpm astro dev status`,
+`pnpm astro dev logs` and `pnpm astro dev stop`. Stop it before you hand
+over.
+
+**Integrations.** Add one with `pnpm astro add <name>` and pin the version
+it writes into `package.json`. Starlight only for a full documentation site
+(see below); no Tailwind, no schema.
+
+**Build and check.** `pnpm build` writes `dist/`. The check is `pnpm verify`
+(see below), not `astro check`.
 
 ## Conventions
 
@@ -222,3 +314,5 @@ a test.
 - Put `.astro` components in `src/components/`.
 - Rename `verify` to `check`: `astro check` is Astro's own command.
 - Commit anything from `raw/`.
+- Regenerate a `data/` file from a new export and replace the owner's
+  version without showing the diff.

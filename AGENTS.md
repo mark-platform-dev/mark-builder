@@ -46,6 +46,10 @@ example.
   (`tests/helpers.js` does it for the test processes).
 - **Pin exact versions** in `template/package.json`; generated projects have
   no lockfile.
+- **`create astro` needs `--no-ai`.** Since create-astro 5.x it overwrites
+  the template's `AGENTS.md` with a generic one (and symlinks `CLAUDE.md`
+  to it) unless that flag is given. Every documented create command and the
+  smoke workflow carry the flag, and the workflow checks the file arrived.
 
 ## Tests
 
