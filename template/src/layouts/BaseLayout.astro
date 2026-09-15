@@ -11,8 +11,9 @@ const description = meta.description ?? site.description
 // Links are built from BASE_URL so the site also works under a sub-path
 // (a GitHub Pages project site, for example). Data files keep root-relative
 // hrefs like "/about/"; this prepends the base without doubling the slash.
+// An absolute href (an external nav link) is left untouched.
 const base = import.meta.env.BASE_URL.replace(/\/$/, "")
-const url = (href) => base + href
+const url = (href) => (href.startsWith("/") ? base + href : href)
 ---
 
 <!doctype html>

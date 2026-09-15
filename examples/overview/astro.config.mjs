@@ -11,18 +11,26 @@ import yamlPlugin from 'unplugin-yaml/vite'
 // transform to report the same error through `this.error({ loc })` gives
 // Rollup a proper location, so the CLI (and the dev overlay) both name it.
 const yaml = yamlPlugin()
-const yamlTransform = yaml.transform
-yaml.transform = function (code, id) {
-  try {
-    return yamlTransform.call(this, code, id)
-  } catch (e) {
-    if (e && e.name === 'YAMLParseError' && Array.isArray(e.linePos)) {
-      const [start] = e.linePos
-      this.error({ message: e.message, id, loc: { file: id, line: start.line, column: start.col }, cause: e })
+function wrapYamlTransform(transform) {
+  return function (code, id) {
+    try {
+      return transform.call(this, code, id)
+    } catch (e) {
+      if (e && e.name === 'YAMLParseError' && Array.isArray(e.linePos)) {
+        const [start] = e.linePos
+        this.error({ message: e.message, id, loc: { file: id, line: start.line, column: start.col }, cause: e })
+      }
+      throw e
     }
-    throw e
   }
 }
+// unplugin's hooks can be a plain function or the object form
+// `{ filter, handler }`; handle both so a future unplugin-yaml bump that
+// switches shape doesn't break every YAML import.
+yaml.transform =
+  typeof yaml.transform === 'function'
+    ? wrapYamlTransform(yaml.transform)
+    : { ...yaml.transform, handler: wrapYamlTransform(yaml.transform.handler) }
 
 export default defineConfig({
   // Published as a GitHub Pages project site, hence the sub-path base.
