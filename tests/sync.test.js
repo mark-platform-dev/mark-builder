@@ -20,6 +20,8 @@ const SYNCED = [
   '.gitignore',
   'src/components/Checklist.jsx',
   'src/components/Checklist.module.css',
+  'src/layouts/BaseLayout.astro',
+  'src/styles/global.css',
 ]
 
 for (const rel of SYNCED) {

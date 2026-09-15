@@ -13,7 +13,12 @@ function createProject(name) {
   const dir = path.join(tmpDir('e2e'), name)
   fs.cpSync(templateDir, dir, {
     recursive: true,
-    filter: (src) => !/(^|[\\/])(node_modules|dist|\.astro)([\\/]|$)/.test(src),
+    filter: (src) => {
+      const rel = path.relative(templateDir, src)
+      if (rel === '') return true
+      const first = rel.split(path.sep)[0]
+      return !['node_modules', 'dist', '.astro', 'pnpm-lock.yaml'].includes(first)
+    },
   })
   fs.rmSync(path.join(dir, 'CHANGELOG.md'), { force: true })
   const pkgFile = path.join(dir, 'package.json')
@@ -142,6 +147,7 @@ function readAllCss(dist) {
 
 test('a project created from the template installs, extends, builds and verifies on its own', async (t) => {
   const dir = createProject('e2e-product')
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }))
   const pnpm = (args) => exec('pnpm', args, { cwd: dir })
 
   await t.test('installs its own dependencies without mark-builder', async () => {
