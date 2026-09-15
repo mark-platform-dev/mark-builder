@@ -33,6 +33,62 @@ The theme already sets colours and type. The plan describes purpose,
 information hierarchy, layout, responsive behaviour and the page's one
 signature element — not the brand.
 
+## Creating a theme
+
+`theme/` is a portable folder with one required file, `theme.css`. The
+template ships a quiet default; a project about a product replaces the
+folder with that product's theme. The owner asks for it and you extract it
+from the product — never invent a brand. If there is no product to draw
+from, keep the default and say so in the design plans.
+
+1. **Gather the source into `raw/`:** the product's site (URL or
+   screenshots), a Figma link or export, a brand guide, logo and font files.
+2. **Write `theme/theme.css`.** Define at least the base tokens in `:root`,
+   with values measured from the source, not from memory:
+
+   ```css
+   :root {
+     --color-background: #fff;
+     --color-surface: #f4f4f2;
+     --color-foreground: #1a1a1a;
+     --color-muted: #6b6b66;
+     --color-border: #d9d9d4;
+     --color-primary: #1f4e79;
+     --color-primary-contrast: #fff;
+     --font-body: 'Brand Sans', system-ui, sans-serif;
+     --font-heading: var(--font-body);
+     --font-mono: 'Brand Mono', ui-monospace, monospace;
+     --radius-control: 4px;
+     --radius-card: 8px;
+   }
+   ```
+
+   Add a `@media (prefers-color-scheme: dark)` block if the product has a
+   dark mode, any further custom properties the product needs (components
+   use them with `var(...)`), and the product's global rules if it has
+   them. Component and page styles still win over the theme: it sits in a
+   CSS layer, they are unlayered.
+3. **Fonts are local.** Put font files in `theme/assets/` with `@font-face`
+   rules in `theme.css`, or import an npm package (`@fontsource/*`,
+   `@fontsource-variable/*`) from `theme.css`. Never link a font from a
+   CDN: `pnpm verify` runs without network and reports every external
+   request. Confirm on the actual files or package that they ship the
+   subsets the content needs (`latin`, `cyrillic`, …).
+4. **Logos and images** go into `theme/assets/`, referenced from
+   `theme.css` with relative `url(./assets/...)`. Every `url()` must
+   resolve to a file inside `theme/`.
+5. **Write `theme/source.md`:** where the theme came from (URL, Figma
+   link), the extraction date, what was measured and what was
+   approximated, and licence notes for fonts and logos.
+6. **Run `pnpm verify`.** Before building it checks the folder: a missing
+   `theme.css` or a `url()` outside `theme/` fails; base tokens the theme
+   leaves undefined are listed as a warning (`src/styles/base.css`
+   fallbacks apply).
+
+A theme is site-wide. A page may override a token locally in its own scoped
+style when its content calls for it; it never edits `theme/`. The theme
+carries the identity, the design plans describe the composition.
+
 ## Conventions
 
 **1. Pages are composition roots.** A page in `src/pages/` imports every data

@@ -5,6 +5,24 @@ into every new project by `create astro --template`; nothing in it may
 reference this monorepo. `examples/overview/` is a project made from the
 template. `tests/` prove the template works on its own.
 
+## The model the template carries
+
+Every generated project has three layers: `raw/` — source material
+(exports, screenshots, transcripts) that is read, never rewritten, never
+committed; `data/` — YAML/JSON the owner edits; `src/` — pages, layouts and
+React components that render the data. Next to them, `theme/` is a folder
+of plain CSS extracted from the product (`theme.css` required, `assets/`,
+`source.md`) and `design/` holds one plan per route. An agent does the
+raw → data extraction, the theme and the first pages once; from then on
+the owner edits data and Markdown without an agent.
+
+The rules an agent follows inside a project live in `template/AGENTS.md`
+(composition roots, React-only components, islands, the theme contract,
+`pnpm verify` before hand-over) and `template/docs/visual-design/README.md`
+(the design instruction). Any change to the template must keep those two
+documents true — update them in the same commit, then copy them to the
+example.
+
 ## Rules
 
 - **Run package scripts with `--filter`.** `pnpm --filter mark-builder-template dev`,

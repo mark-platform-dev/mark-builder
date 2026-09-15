@@ -31,9 +31,10 @@ pnpm exec playwright install chromium   # once; only `pnpm verify` needs it
 - **A new page:** ask an agent (see `AGENTS.md`), or add
   `src/pages/<route>.astro` yourself: import the data it needs and pass it to
   components. Add the route to `nav` in `data/site.yaml`.
-- **The theme:** replace the `theme/` folder with the product's theme.
-  `theme/theme.css` is the only required file; `theme/source.md` explains
-  the shape.
+- **The theme:** replace the `theme/` folder with the product's theme, or
+  ask an agent to extract one from the product's site, Figma or brand guide
+  (see `AGENTS.md`). `theme/theme.css` is the only required file;
+  `theme/source.md` explains the shape.
 - **Before handing over:** `pnpm verify`.
 
 ## Publish
