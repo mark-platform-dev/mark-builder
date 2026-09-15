@@ -32,9 +32,14 @@ template. `tests/` prove the template works on its own.
 ## Tests
 
 ```bash
-pnpm test                                      # everything
-pnpm test -- --test-name-pattern="checkTheme"  # one group
+pnpm test                                                          # everything
+node --test --test-name-pattern="checkTheme" tests/verify.test.js  # a group in one file
 ```
+
+The pattern flag must come *before* the file argument: `node --test`
+matches flags positionally, so `pnpm test -- --test-name-pattern=...`
+(which appends the flag after the `tests/**/*.test.js` glob) is silently
+ignored and runs the whole suite.
 
 - `template.test.js` — template builds and verifies; start page comes from data.
 - `verify.test.js` — verify's functions on hand-written `dist/` fixtures,
