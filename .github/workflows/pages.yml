@@ -6,13 +6,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Serialise deploys: two pushes in quick succession would otherwise race and
-# the older build could land last. Not cancel-in-progress — a half-finished
-# deploy is worse than a redundant one.
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 env:
   ASTRO_TELEMETRY_DISABLED: 1
 
@@ -67,6 +60,12 @@ jobs:
     # pages credentials anyway.
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Serialise deploys: two pushes in quick succession would otherwise race
+    # and the older build could land last. Not cancel-in-progress — a
+    # half-finished deploy is worse than a redundant one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write
